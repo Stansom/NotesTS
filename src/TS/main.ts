@@ -1,8 +1,8 @@
-import {Notes} from "./types.js";
+import { Notes } from "./types.js";
 import * as tools from "./misc/tools.js";
 import * as store from "./store/store.js";
 import * as ui from "./ui/uitools.js";
-import {log} from "./misc/logger.js";
+import { log } from "./misc/logger.js";
 
 const noteNameInput = document.querySelector(".note-name-input");
 const noteBodyInput = document.querySelector("#note-input-area");
