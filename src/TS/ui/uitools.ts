@@ -1,46 +1,39 @@
-import {Note} from '../types.js'
-import {
-    log
-} from '../misc/logger.js';
-
-const noteName: HTMLInputElement | null = document.querySelector('.note-name-input');
-const noteBody: HTMLInputElement | null = document.querySelector('#note-input-area');
-const noteCreationDate = document.querySelector('#note-creation-date');
+import {Note} from "../types.js";
+import {log} from "../misc/logger.js";
 
 function applyBackgroundColor(hsl: string, property: string) {
     document.documentElement.style.setProperty(property, hsl);
 }
 
-function renderNote(note: Note) {
+interface Elems {
+    [val: string]: HTMLInputElement | Element;
+}
+
+function renderNote(note: Note, elems: Elems) {
     log(`UI: rendering the note ${note.id}`);
+    const {noteName, noteBody, noteCreationDate} = elems;
     if (note && noteName && noteBody && noteCreationDate) {
-        noteName.value = note.name;
-        noteBody.value = note.body;
+        (noteName as HTMLInputElement).value = note.name;
+        (noteBody as HTMLInputElement).value = note.body;
         noteCreationDate.textContent = note.createdAt;
-        applyBackgroundColor(note.color, '--list-background-color');
+        applyBackgroundColor(note.color, "--list-background-color");
     }
 }
 
-function appendRadioButton(notes: Array<Note>, activeID: number, parent: Element) {
-    const aid = Number(activeID);
+function appendRadioButton(
+    notes: Array<Note>,
+    activeID: string,
+    parent: Element
+) {
     parent.innerHTML = notes.reduce((acc, v) => {
-        // console.log('from appedn', typeof aid, typeof v.id)
         if (v) {
             acc += `<li class="radio-button-item" id="${v.id}" 
-        style="background-color: ${v.color}" ${v.id === aid ? 'button-active' : ''}></li>`
-
+        style="background-color: ${v.color}" ${
+                v.id === activeID ? "button-active" : ""
+            }></li>`;
         }
-        // acc += ''
         return acc;
-
-        // acc += `<li class="radio-button-item" id="${v.id}" 
-        // style="background-color: ${v.color}" ${v.id === aid ? 'button-active' : ''}></li>`
-    }, '')
+    }, "");
 }
 
-export {
-    renderNote,
-    appendRadioButton,
-    // renderNotes,
-    // renderAllNotes
-}
+export {renderNote, appendRadioButton};

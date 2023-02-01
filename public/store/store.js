@@ -1,129 +1,99 @@
-import { Atom } from '../misc/atom.js';
-import * as tools from '../misc/tools.js';
-import * as localStorage from './localstorage.js';
-import { log } from '../misc/logger.js';
-/* storage: {
-               activeNoteID: number,
-               notes [{ name: String,
-                        body: String,
-                        createdAt: String,
-                        id: String,
-                        color: String}]} */
-/* storage: {
+import { Atom } from "../misc/atom.js";
+import * as tools from "../misc/tools.js";
+import * as localStorage from "./localstorage.js";
+import { log } from "../misc/logger.js";
+/* Storage shape: {
                activeNoteID: number,
                notes {id: { name: String,
                         body: String,
                         createdAt: String,
                         id: String,
                         color: String}} */
-const getNotesFromLocalStorage = () => localStorage.getFromLocalStorage('notes');
-const setNotesToLocalStorage = (notes) => localStorage.setToLocalStorage('notes', notes);
+const getNotesFromLocalStorage = () => localStorage.getFromLocalStorage("notes");
+const setNotesToLocalStorage = (notes) => localStorage.setToLocalStorage("notes", notes);
 const store = Atom(null);
-function createNote(name = '', body = '', id) {
+function createNote(name = "", body = "") {
+    const newNoteID = `id${idNum(lastID()) + 1}`;
     return {
         name,
         body,
         createdAt: tools.dateGenerator(),
         color: tools.softTonesGeneratorHSL(),
-        id
+        id: newNoteID,
     };
 }
-// let actualNotesSize = 0;
-// function lastID(): number {
-//     const size = (store.val() as Notes).notes.length;
-//
-//     return size;
-// }
 function addWatcher(watcher) {
     store.addWatcher(watcher);
 }
-function updateField(pred, f) {
-    return (note) => {
-        log(`STORE: updating a note with id: ${note.id}`);
-        return pred(note) ? f(note) : note;
-    };
-}
-// function updateIn(o: Object, p: Array<string>, v:unknown): Object {
-//     if (o === null || typeof (o) !== 'object' || 'isActiveClone' in o)
-//         return o;
-//     let ret: Object = {};
-//     let firstEntry = p[0] as keyof typeof o;
-//
-//     if(o[firstEntry] && p.length > 0) {
-//         updateIn(o[firstEntry], p.slice(1), v)
-//     }
-//     return ret;
-// }
-function update(o, k, f) {
-    let val = f(o[k]);
-    return Object.assign(Object.assign({}, o), { [k]: val });
-}
-function updateIn(o, p, f) {
-    if (p.length === 0) {
-        return f(o);
-    }
-    let firstEntry = p[0];
-    let restEntries = p.slice(1);
-    return update(o, firstEntry, (v) => {
-        return updateIn(v, restEntries, f);
-    });
-}
-console.log(updateIn({ name: "string",
-    body: "string",
-    createdAt: "string",
-    id: 1,
-    color: "string" }, ["body"], () => "body"));
 function updateNoteName(noteID, name) {
     store.update((oldNotes) => {
-        // return {
-        //     ...oldNotes, notes: oldNotes.notes.map(updateField((n) => n.id === noteID, (n) => ({...n, name})))
-        // }
-        // return {...oldNotes, notes: updateIn<Note>(oldNotes.notes)}
-        let tr = {};
-        for (let n in oldNotes.notes) {
-            return n;
-        }
+        return Object.assign(Object.assign({}, oldNotes), { notes: tools.updateIn(oldNotes.notes, [noteID.toString(), "name"], () => name) });
     });
 }
 function updateNoteBody(noteID, body) {
     store.update((oldNotes) => {
-        return Object.assign(Object.assign({}, oldNotes), { notes: oldNotes.notes.map(updateField((n) => n.id === noteID, (n) => (Object.assign(Object.assign({}, n), { body })))) });
+        return Object.assign(Object.assign({}, oldNotes), { notes: tools.updateIn(oldNotes.notes, [noteID.toString(), "body"], () => body) });
     });
 }
+function notesCount() {
+    var _a;
+    return Object.keys((_a = store.val()) === null || _a === void 0 ? void 0 : _a.notes).length || 1;
+}
 function addNote(note) {
-    log('STORE: adding a new note: ', note, 'old notes', store.val());
+    log("STORE: adding a new note: ", note, "old notes", store.val());
     if (note) {
-        store.update((ov) => (Object.assign(Object.assign({}, ov), { 
-            // activeNoteID: note.id,
-            notes: [...ov.notes, note] })));
-        // setActive(note.id + 1)
+        store.update((ov) => (Object.assign(Object.assign({}, ov), { notes: Object.assign(Object.assign({}, ov.notes), { [note.id]: note }), activeNoteID: note.id })));
     }
 }
-function setActive(id) {
-    if (id >= 0) {
-        log(`STORE: setting active note to ${id}`);
-        store.update((ov) => (Object.assign(Object.assign({}, ov), { activeNoteID: id })));
-    }
+function setActiveNote(id) {
+    log(`STORE: setting active note to ${id}`);
+    store.update((ov) => (Object.assign(Object.assign({}, ov), { activeNoteID: id })));
+}
+function lastID() {
+    var _a;
+    return Object.keys((_a = store.val()) === null || _a === void 0 ? void 0 : _a.notes)[notesCount() - 1];
+}
+function removeKey(o, k) {
+    let newObj = Object.assign({}, o);
+    delete newObj[k];
+    return newObj;
+}
+function idNum(id) {
+    return Number(id.substring(2));
+}
+function findPrevID(o, currID) {
+    const n = o.notes;
+    const nks = Object.keys(n);
+    const currInd = nks.findIndex((v) => v === currID);
+    const prevID = nks[currInd - 1];
+    log(`STORE FIND PREV ID: keys ${nks} current ID: ${currInd}, previous ID: ${prevID}`);
+    return prevID;
 }
 function removeNote(id) {
-    if (id > 0) {
-        log(`STORE: removing a note by id: ${id}`);
-        store.update((oldNotes) => {
-            return Object.assign(Object.assign({}, oldNotes), { notes: oldNotes.notes.filter((n) => n.id !== id) });
-        });
+    let idToNum = idNum(id);
+    if (idToNum <= 0) {
+        setActiveNote("id0");
+        return;
     }
-    // log(`STORE: last id ${actualNotesSize}`);
+    let newID = `id${idToNum - 1}`;
+    log(`STORE: removing a note by id: ${idNum(id)} and new ID: ${newID}`);
+    store.update((oldNotes) => {
+        const prevID = findPrevID(oldNotes, id);
+        return Object.assign(Object.assign({}, oldNotes), { notes: Object.assign({}, removeKey(oldNotes.notes, id)), activeNoteID: prevID });
+    });
 }
 function initStore(init) {
-    log('STORE: initializing');
-    store.update(() => (Object.assign({}, init)));
+    const initItems = getNotesFromLocalStorage() || init;
+    log("STORE: initializing");
+    store.update(() => (Object.assign({}, initItems)));
 }
-// addWatcher(setNotesToLocalStorage);
+function activeNote() {
+    var _a;
+    return ((_a = store.val()) === null || _a === void 0 ? void 0 : _a.activeNoteID) || `id0`;
+}
 addWatcher((nv) => {
-    // actualNotesSize = nv.notes.length;
-    // log('STORE: From size watcher: ', actualNotesSize)
     setNotesToLocalStorage(nv);
 });
-export { 
+export { removeNote, addNote, addWatcher, setActiveNote, initStore, createNote, updateNoteBody, updateNoteName, activeNote,
 // store,
-removeNote, addNote, addWatcher, setActive, getNotesFromLocalStorage, initStore, createNote, updateNoteBody, updateNoteName };
+ };

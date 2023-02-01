@@ -43,7 +43,7 @@ function updateField(m: Object, k: string, v: unknown) {
 function update<T>(o: T, k: keyof typeof o, f: Function): T {
     let val = f(o[k])
 
-    return { ...o, [k]: val }
+    return {...o, [k]: val}
 }
 
 function updateIn<T>(o: T, p: Array<string>, f: Function): T {

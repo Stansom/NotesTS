@@ -2,4 +2,6 @@ const config = {
     debugMode: true
 }
 
-export {config}
+export {
+    config
+}

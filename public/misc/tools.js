@@ -27,6 +27,20 @@ function softTonesGeneratorHSL() {
 function updateField(m, k, v) {
     return Object.assign(Object.assign({}, m), { [k]: v });
 }
+function update(o, k, f) {
+    let val = f(o[k]);
+    return Object.assign(Object.assign({}, o), { [k]: val });
+}
+function updateIn(o, p, f) {
+    if (p.length === 0) {
+        return f(o);
+    }
+    let firstEntry = p[0];
+    let restEntries = p.slice(1);
+    return update(o, firstEntry, (v) => {
+        return updateIn(v, restEntries, f);
+    });
+}
 function dateGenerator() {
     return `${date().getDate() % 10 ? date().getDate() : '0' + date().getDate()}/${getMonth()}/${date().getFullYear()}`;
 }
@@ -47,4 +61,4 @@ const copyOnEdit = (m, f) => {
 function identity(n) {
     return n;
 }
-export { conjoin, isEmpty, date, backgroundColorGenerator, softTonesGeneratorHSL, dateGenerator, idGenerator, deactivateListEntries, updateField, copyOnEdit, cloneArray, identity };
+export { conjoin, isEmpty, date, backgroundColorGenerator, softTonesGeneratorHSL, dateGenerator, idGenerator, deactivateListEntries, updateField, copyOnEdit, cloneArray, identity, updateIn };

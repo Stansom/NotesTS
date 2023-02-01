@@ -106,7 +106,9 @@ function toggleAllUnActive(m) {
     return m.map((todo) => updateField(todo, 'active', false));
 }
 
-function setActiveNoteBody(body) {}
+function setActiveNoteBody(body) {
+}
+
 noteBodyInput.addEventListener('keyup', (e) => {
     e.preventDefault();
     const radioListActiveNote = document.querySelector('li[button-active]');

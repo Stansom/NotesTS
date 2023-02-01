@@ -106,7 +106,6 @@ function renderAllNotes(notes, parent) {
     }
 
 
-
     // renderNote(notes)
 
     // console.log([...Object.entries(notes).map(n => n[1])].reduce((acc, v) => {

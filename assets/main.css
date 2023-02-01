@@ -260,10 +260,6 @@ main {
     }
 }
 
-.radio-button-item.noafter:hover:last-child::after {
-    content: none;
-}
-
 .radio-button-item:last-child:hover::after {
     content: "+";
     position: absolute;
