@@ -14,9 +14,22 @@ interface Note {
     color: string
 }
 
+interface NotesObj {
+    [key: number]: Note
+}
+//
+// let o1: NotesObj = {1: {
+//         name: "string",
+//         body: "string",
+//         createdAt: "string",
+//         id: 1,
+//         color: "string"
+//     }}
+
+
 interface Notes {
     activeNoteID: number,
-    notes: Array<Note>
+    notes: NotesObj
 }
 
 export {

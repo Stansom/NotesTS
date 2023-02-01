@@ -9,22 +9,26 @@ const radioButtonsList = document.querySelector('.radio-buttons-list');
 const deleteNoteButton = document.querySelector('#note-delete-button');
 const nts = getNotesFromLocalStorage() || {
     activeNoteID: 0,
-    notes: [{
+    notes: {
+        0: {
             color: tools.softTonesGeneratorHSL(),
             name: 'The First Note',
             body: 'Just a body, you can change me.',
             createdAt: tools.dateGenerator(),
             id: 0
-        }]
+        }
+    }
 };
+// nts.notes.note
 store.addWatcher((v) => {
     log('MAIN: from watcher, got a new value: ', v);
+    let notes = Object.values(v.notes);
     if (radioButtonsList) {
-        ui.appendRadioButton([...v.notes], v.activeNoteID, radioButtonsList);
+        ui.appendRadioButton([...notes], v.activeNoteID, radioButtonsList);
         // ui.renderNote(
         //     v.notes.length > 2 ?
         //     v.notes[v.activeNoteID - 1] : v.notes[v.activeNoteID] );
-        let noteToRender = v.notes[v.activeNoteID];
+        let noteToRender = notes[v.activeNoteID];
         log(`asdasdasd ${noteToRender.id}`);
         if (noteToRender) {
             ui.renderNote(noteToRender);

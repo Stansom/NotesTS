@@ -40,6 +40,25 @@ function updateField(m: Object, k: string, v: unknown) {
 }
 
 
+function update<T>(o: T, k: keyof typeof o, f: Function): T {
+    let val = f(o[k])
+
+    return { ...o, [k]: val }
+}
+
+function updateIn<T>(o: T, p: Array<string>, f: Function): T {
+    if (p.length === 0) {
+        return f(o)
+    }
+    let firstEntry = p[0];
+
+    let restEntries = p.slice(1);
+    return update(o, firstEntry as keyof typeof o, (v: Object) => {
+        return updateIn(v, restEntries, f)
+    })
+}
+
+
 function dateGenerator() {
     return `${date().getDate() % 10 ? date().getDate() : '0' + date().getDate()}/${getMonth()}/${date().getFullYear()}`;
 }
@@ -83,5 +102,6 @@ export {
     updateField,
     copyOnEdit,
     cloneArray,
-    identity
+    identity,
+    updateIn
 }

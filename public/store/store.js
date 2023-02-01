@@ -39,13 +39,50 @@ function addWatcher(watcher) {
 }
 function updateField(pred, f) {
     return (note) => {
-        log(`STORE: updating the note ${note.id}`);
+        log(`STORE: updating a note with id: ${note.id}`);
         return pred(note) ? f(note) : note;
     };
 }
+// function updateIn(o: Object, p: Array<string>, v:unknown): Object {
+//     if (o === null || typeof (o) !== 'object' || 'isActiveClone' in o)
+//         return o;
+//     let ret: Object = {};
+//     let firstEntry = p[0] as keyof typeof o;
+//
+//     if(o[firstEntry] && p.length > 0) {
+//         updateIn(o[firstEntry], p.slice(1), v)
+//     }
+//     return ret;
+// }
+function update(o, k, f) {
+    let val = f(o[k]);
+    return Object.assign(Object.assign({}, o), { [k]: val });
+}
+function updateIn(o, p, f) {
+    if (p.length === 0) {
+        return f(o);
+    }
+    let firstEntry = p[0];
+    let restEntries = p.slice(1);
+    return update(o, firstEntry, (v) => {
+        return updateIn(v, restEntries, f);
+    });
+}
+console.log(updateIn({ name: "string",
+    body: "string",
+    createdAt: "string",
+    id: 1,
+    color: "string" }, ["body"], () => "body"));
 function updateNoteName(noteID, name) {
     store.update((oldNotes) => {
-        return Object.assign(Object.assign({}, oldNotes), { notes: oldNotes.notes.map(updateField((n) => n.id === noteID, (n) => (Object.assign(Object.assign({}, n), { name })))) });
+        // return {
+        //     ...oldNotes, notes: oldNotes.notes.map(updateField((n) => n.id === noteID, (n) => ({...n, name})))
+        // }
+        // return {...oldNotes, notes: updateIn<Note>(oldNotes.notes)}
+        let tr = {};
+        for (let n in oldNotes.notes) {
+            return n;
+        }
     });
 }
 function updateNoteBody(noteID, body) {
