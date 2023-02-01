@@ -3,16 +3,8 @@ import {
 } from '../misc/atom.js';
 import * as tools from '../misc/tools.js'
 import * as localStorage from './localstorage.js';
-import {Note, Notes} from '../types.js';
-import {log} from '../misc/logger.js';
-
-/* storage: {
-               activeNoteID: number,
-               notes [{ name: String,
-                        body: String,
-                        createdAt: String,
-                        id: String,
-                        color: String}]} */
+import { Note, Notes } from '../types.js';
+import { log } from '../misc/logger.js';
 
 /* storage: {
                activeNoteID: number,
@@ -37,31 +29,19 @@ function createNote(name = '', body = '', id: number): Note {
     }
 }
 
-// let actualNotesSize = 0;
-
-// function lastID(): number {
-//     const size = (store.val() as Notes).notes.length;
-//
-//     return size;
-// }
-
 function addWatcher(watcher: (v: Notes) => unknown) {
     store.addWatcher(watcher);
 }
 
-function updateField(pred: (n: Note) => boolean, f: (n: Note) => Note): (n: Note) => Note {
-
-    return (note: Note) => {
-        log(`STORE: updating the note ${note.id}`)
-
-        return pred(note) ? f(note) : note
-    }
-}
-
-function updateNoteName(noteID: number, name: string) {
+function updateNoteName(noteID: number, name: string): void {
     store.update((oldNotes: Notes): Notes => {
+        // return {
+        //     ...oldNotes, notes: oldNotes.notes.map(updateField((n) => n.id === noteID, (n) => ({...n, name})))
+        // }
+
         return {
-            ...oldNotes, notes: oldNotes.notes.map(updateField((n) => n.id === noteID, (n) => ({...n, name})))
+            ...oldNotes,
+            notes: tools.updateIn(oldNotes.notes, [noteID.toString(), "name"], () => name)
         }
     })
 }
@@ -69,8 +49,12 @@ function updateNoteName(noteID: number, name: string) {
 function updateNoteBody(noteID: number, body: string) {
     store.update((oldNotes: Notes): Notes => {
         return {
-            ...oldNotes, notes: oldNotes.notes.map(updateField((n) => n.id === noteID, (n) => ({...n, body})))
+            ...oldNotes,
+            notes: tools.updateIn(oldNotes.notes, [noteID.toString(), "body"], () => body)
         }
+        // return {
+        //     ...oldNotes, notes: oldNotes.notes.map(updateField((n) => n.id === noteID, (n) => ({ ...n, body })))
+        // }
     })
 }
 
@@ -79,10 +63,8 @@ function addNote(note: Note) {
     if (note) {
         store.update((ov: Notes) => ({
             ...ov,
-            // activeNoteID: note.id,
-            notes: [...ov.notes, note]
+            notes: { ...ov.notes, [note.id]: note }
         }))
-        // setActive(note.id + 1)
     }
 }
 
@@ -96,14 +78,34 @@ function setActive(id: number) {
     }
 }
 
+function removeKey(o: Object, k: string | number): Object {
+
+    let newObj = { ...o };
+    delete newObj[k as keyof typeof o];
+
+    return newObj;
+
+}
+
+
+// function removeKey(o, k) {
+
+//     let newObj = { ...o };
+//     delete o[k];
+
+//     return newObj;
+
+// }
 function removeNote(id: number) {
+
     if (id > 0) {
         log(`STORE: removing a note by id: ${id}`);
 
         store.update((oldNotes: Notes): Notes => {
             return {
                 ...oldNotes,
-                notes: oldNotes.notes.filter((n: Note) => n.id !== id),
+                notes: { ...removeKey(oldNotes.notes, id.toString()) }
+
                 // activeNoteID: oldNotes.activeNoteID,
             }
         });
