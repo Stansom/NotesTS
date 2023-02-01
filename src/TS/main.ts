@@ -33,7 +33,6 @@ store.addWatcher((v: Notes) => {
     let notes = v.notes;
     if (radioButtonsList) {
         let noteToRender = notes[v.activeNoteID];
-        log("MAIN: from watcher, Active Note ID: ", v.activeNoteID);
         if (noteToRender) {
             ui.appendRadioButton(
                 [...Object.values(notes)],
