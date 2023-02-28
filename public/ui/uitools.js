@@ -21,4 +21,26 @@ function appendRadioButton(notes, activeID, parent) {
         return acc;
     }, "");
 }
-export { renderNote, appendRadioButton };
+// function renderNoteCounter(parent: Element) {
+//     return function (count: number) {
+//         const ch = document.createElement("span");
+//         ch.id = "note-count";
+//         ch.textContent = `${count}`;
+//         parent.replaceChildren(ch);
+//     }
+// }
+function renderNoteCounter(count, parent) {
+    const ch = document.createElement("span");
+    ch.id = "note-count";
+    ch.textContent = `${count}`;
+    parent.replaceChildren(ch);
+}
+// function renderNoteCounter(count: number) {
+//     const ch = document.createElement("span");
+//     ch.id = "note-count";
+//     ch.textContent = `${count}`;
+//     return function (parent: Element) {
+//         parent.replaceChildren(ch);
+//     }
+// }
+export { renderNote, appendRadioButton, renderNoteCounter };

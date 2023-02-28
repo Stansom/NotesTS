@@ -41,18 +41,18 @@ function updateField(m: Object, k: string, v: unknown) {
 
 
 function update<T>(o: T, k: keyof typeof o, f: Function): T {
-    let val = f(o[k])
+    const val = f(o[k])
 
-    return {...o, [k]: val}
+    return { ...o, [k]: val }
 }
 
 function updateIn<T>(o: T, p: Array<string>, f: Function): T {
     if (p.length === 0) {
         return f(o)
     }
-    let firstEntry = p[0];
+    const firstEntry = p[0];
+    const restEntries = p.slice(1);
 
-    let restEntries = p.slice(1);
     return update(o, firstEntry as keyof typeof o, (v: Object) => {
         return updateIn(v, restEntries, f)
     })
@@ -75,10 +75,11 @@ function deactivateListEntries() {
     activeLis.forEach(li => li.removeAttribute('button-active'));
 }
 
-const cloneArray = (arr: []): [] | Array<Array<unknown>> => arr.map((item) =>
-    Array.isArray(item) ? cloneArray(item) : item);
+function cloneArray(arr: []): [] | Array<Array<unknown>> {
+    return arr.map((item) => Array.isArray(item) ? cloneArray(item) : item);
+}
 
-const copyOnEdit = (m: Object, f: Function) => {
+function copyOnEdit(m: Object, f: Function) {
     const copy = {
         ...m
     };
@@ -88,6 +89,10 @@ const copyOnEdit = (m: Object, f: Function) => {
 
 function identity(n: unknown) {
     return n
+}
+
+function pipe(...fns: Array<Function>): Function {
+    return (val: any) => fns.reduce((acc: Function, v: Function) => v(acc), val);
 }
 
 export {
@@ -103,5 +108,6 @@ export {
     copyOnEdit,
     cloneArray,
     identity,
-    updateIn
+    updateIn,
+    pipe
 }

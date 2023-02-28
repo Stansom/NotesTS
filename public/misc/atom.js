@@ -16,4 +16,25 @@ function Atom(initValue) {
         addWatcher: (watcher) => watchers.push(watcher),
     };
 }
-export { Atom };
+function ReactiveCell(a, f) {
+    // const cell = Atom<T>(f(a.val()) || a.val());
+    const cell = Atom(a.val());
+    a.addWatcher((val) => {
+        cell.update((cv) => {
+            // const oldVal = f({ ...cv }) || 0;
+            // const nv = f(val);
+            // console.log("from reactive cell", oldVal, nv)
+            // if (oldVal !== nv) {
+            //     watchers.forEach(w => w(nv));
+            //     // console.log("from reactive cell", { ...cv, nv })
+            // }
+            // return { ...cv, nv }
+            return f(val);
+        });
+    });
+    return {
+        val: cell.val,
+        addWatcher: cell.addWatcher
+    };
+}
+export { Atom, ReactiveCell };

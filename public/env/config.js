@@ -1,4 +1,4 @@
 const config = {
-    debug: true
+    debug: false
 };
 export { config };

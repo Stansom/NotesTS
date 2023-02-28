@@ -1,8 +1,8 @@
-import {Atom} from "../misc/atom.js";
+import { Atom, ReactiveCell } from "../misc/atom.js";
 import * as tools from "../misc/tools.js";
 import * as localStorage from "./localstorage.js";
-import {Note, Notes} from "../types.js";
-import {log} from "../misc/logger.js";
+import { Note, Notes, RCell } from "../types.js";
+import { log } from "../misc/logger.js";
 
 /* Storage shape: {
                activeNoteID: number,
@@ -65,11 +65,11 @@ function notesCount() {
 }
 
 function addNote(note: Note) {
-    log("STORE: adding a new note: ", note, "old notes", store.val());
+    log("STORE: adding a new note: ", note);
     if (note) {
         store.update((ov: Notes) => ({
             ...ov,
-            notes: Object.assign({...ov.notes}, {[note.id]: note}),
+            notes: { ...ov.notes, [note.id]: note },
             activeNoteID: note.id,
         }));
     }
@@ -88,7 +88,7 @@ function lastID(): string {
 }
 
 function removeKey<T>(o: T, k: string): T {
-    let newObj = {...o};
+    let newObj = { ...o };
     delete newObj[k as keyof typeof o];
 
     return newObj;
@@ -125,7 +125,7 @@ function removeNote(id: string) {
 
         return {
             ...oldNotes,
-            notes: {...removeKey(oldNotes.notes, id)},
+            notes: { ...removeKey(oldNotes.notes, id) },
             activeNoteID: prevID,
         };
     });
@@ -139,13 +139,25 @@ function initStore(init: Notes) {
     }));
 }
 
-function activeNote(): string {
-    return store.val()?.activeNoteID || `id0`;
+function activeNote(nts: Notes): string {
+    return nts.activeNoteID || `id0`;
 }
 
-addWatcher((nv) => {
-    setNotesToLocalStorage(nv);
-});
+// addWatcher((nv) => {
+//     setNotesToLocalStorage(nv);
+//     // activeNote(nv);
+// });
+
+ReactiveCell(store, activeNote);
+ReactiveCell(store, setNotesToLocalStorage);
+
+function storeWatcher(f: Function): RCell<Notes> {
+    return ReactiveCell(store, f)
+}
+
+function values(): Notes {
+    return store.val();
+}
 
 export {
     removeNote,
@@ -158,4 +170,7 @@ export {
     updateNoteName,
     activeNote,
     // store,
+    storeWatcher,
+    notesCount,
+    values
 };

@@ -1,4 +1,4 @@
-import { Atom } from "../misc/atom.js";
+import { Atom, ReactiveCell } from "../misc/atom.js";
 import * as tools from "../misc/tools.js";
 import * as localStorage from "./localstorage.js";
 import { log } from "../misc/logger.js";
@@ -40,7 +40,7 @@ function notesCount() {
     return Object.keys((_a = store.val()) === null || _a === void 0 ? void 0 : _a.notes).length || 1;
 }
 function addNote(note) {
-    log("STORE: adding a new note: ", note, "old notes", store.val());
+    log("STORE: adding a new note: ", note);
     if (note) {
         store.update((ov) => (Object.assign(Object.assign({}, ov), { notes: Object.assign(Object.assign({}, ov.notes), { [note.id]: note }), activeNoteID: note.id })));
     }
@@ -87,13 +87,21 @@ function initStore(init) {
     log("STORE: initializing");
     store.update(() => (Object.assign({}, initItems)));
 }
-function activeNote() {
-    var _a;
-    return ((_a = store.val()) === null || _a === void 0 ? void 0 : _a.activeNoteID) || `id0`;
+function activeNote(nts) {
+    return nts.activeNoteID || `id0`;
 }
-addWatcher((nv) => {
-    setNotesToLocalStorage(nv);
-});
-export { removeNote, addNote, addWatcher, setActiveNote, initStore, createNote, updateNoteBody, updateNoteName, activeNote,
+// addWatcher((nv) => {
+//     setNotesToLocalStorage(nv);
+//     // activeNote(nv);
+// });
+ReactiveCell(store, activeNote);
+ReactiveCell(store, setNotesToLocalStorage);
+function storeWatcher(f) {
+    return ReactiveCell(store, f);
+}
+function values() {
+    return store.val();
+}
+export { removeNote, addNote, addWatcher, setActiveNote, initStore, createNote, updateNoteBody, updateNoteName, activeNote, 
 // store,
- };
+storeWatcher, notesCount, values };

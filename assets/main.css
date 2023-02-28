@@ -435,3 +435,23 @@ main {
 .note-delete-button:active {
     transform: scale(1.1);
 }
+
+.note-count {
+    position: absolute;
+    /* background-color: transparent; */
+    /* border: none;
+    border-radius: 50%;
+    color: black;
+    width: 2rem;
+    height: 2rem; */
+    width: auto;
+    height: 2rem;
+    display: inline-flex;
+    text-align: center;
+    /* align-self: flex-end;
+    margin-right: 5rem; */
+    bottom: 2rem;
+    right: 16%;
+    /* transition: 0.1s ease-in;
+    cursor: pointer; */
+}

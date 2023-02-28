@@ -28,15 +28,15 @@ function updateField(m, k, v) {
     return Object.assign(Object.assign({}, m), { [k]: v });
 }
 function update(o, k, f) {
-    let val = f(o[k]);
+    const val = f(o[k]);
     return Object.assign(Object.assign({}, o), { [k]: val });
 }
 function updateIn(o, p, f) {
     if (p.length === 0) {
         return f(o);
     }
-    let firstEntry = p[0];
-    let restEntries = p.slice(1);
+    const firstEntry = p[0];
+    const restEntries = p.slice(1);
     return update(o, firstEntry, (v) => {
         return updateIn(v, restEntries, f);
     });
@@ -52,13 +52,18 @@ function deactivateListEntries() {
     const activeLis = document.querySelectorAll('li[button-active]');
     activeLis.forEach(li => li.removeAttribute('button-active'));
 }
-const cloneArray = (arr) => arr.map((item) => Array.isArray(item) ? cloneArray(item) : item);
-const copyOnEdit = (m, f) => {
+function cloneArray(arr) {
+    return arr.map((item) => Array.isArray(item) ? cloneArray(item) : item);
+}
+function copyOnEdit(m, f) {
     const copy = Object.assign({}, m);
     f(copy);
     return copy;
-};
+}
 function identity(n) {
     return n;
 }
-export { conjoin, isEmpty, date, backgroundColorGenerator, softTonesGeneratorHSL, dateGenerator, idGenerator, deactivateListEntries, updateField, copyOnEdit, cloneArray, identity, updateIn };
+function pipe(...fns) {
+    return (val) => fns.reduce((acc, v) => v(acc), val);
+}
+export { conjoin, isEmpty, date, backgroundColorGenerator, softTonesGeneratorHSL, dateGenerator, idGenerator, deactivateListEntries, updateField, copyOnEdit, cloneArray, identity, updateIn, pipe };

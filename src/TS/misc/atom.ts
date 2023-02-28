@@ -1,6 +1,7 @@
-import {log} from "./logger.js";
+import { Atomic, RCell } from "../types.js";
+import { log } from "./logger.js";
 
-function Atom<T>(initValue: T | null) {
+function Atom<T>(initValue: T | null): Atomic<T> {
     log("ATOM: initializing");
     let value = initValue;
     const watchers: Array<(v: T) => unknown> = [];
@@ -20,4 +21,30 @@ function Atom<T>(initValue: T | null) {
     };
 }
 
-export {Atom};
+function ReactiveCell<T>(a: Atomic<T>, f: Function): RCell<T> {
+    // const cell = Atom<T>(f(a.val()) || a.val());
+    const cell = Atom<T>(a.val());
+    a.addWatcher((val) => {
+
+        cell.update((cv) => {
+            // const oldVal = f({ ...cv }) || 0;
+
+            // const nv = f(val);
+            // console.log("from reactive cell", oldVal, nv)
+
+            // if (oldVal !== nv) {
+            //     watchers.forEach(w => w(nv));
+            //     // console.log("from reactive cell", { ...cv, nv })
+            // }
+            // return { ...cv, nv }
+            return f(val)
+        })
+    })
+
+    return {
+        val: cell.val,
+        addWatcher: cell.addWatcher
+    }
+}
+
+export { Atom, ReactiveCell };
