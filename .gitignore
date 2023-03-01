@@ -30,3 +30,6 @@ Temporary Items
 
 # WebStorm
 .idea
+
+# ESLint config
+.eslintrc.json
