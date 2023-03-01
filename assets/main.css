@@ -36,7 +36,7 @@ main {
     font-family: 'Rowdies', serif;
     font-style: normal;
     font-size: 27px;
-    margin: 0.4rem 2.6rem;
+    margin: 0.1rem 0.3rem;
 }
 
 .notes-logo::after {
@@ -46,7 +46,7 @@ main {
     height: 3px;
     width: 5.5rem;
     bottom: 0;
-    left: 0.5rem;
+    left: 0.3rem;
 }
 
 .note-container {
@@ -56,6 +56,7 @@ main {
     border: none;
     border-radius: 25px;
     background-color: var(--list-background-color);
+    margin-bottom: 19px;
 }
 
 .grid {
@@ -141,7 +142,7 @@ main {
 
 .text-shadow-22 {
     text-shadow: 2px 1px 1px #02002469, 4px 1px 5px #0200243a,
-    18px 1px 10px #0200246e;
+        18px 1px 10px #0200246e;
 }
 
 .grad-ocean {
@@ -212,13 +213,14 @@ main {
     background-color: var(--list-background-color);
     margin-right: 0.3rem;
     cursor: pointer;
+    bottom: 15px;
 }
 
 .radio-button-item:last-child::after {
     content: "+";
     position: absolute;
     font-size: 2.2rem;
-    line-height: 1.5rem;
+    line-height: 1.75rem;
     left: 0.2rem;
     color: black;
     transform: scale(1);
