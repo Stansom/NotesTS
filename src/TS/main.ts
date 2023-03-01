@@ -27,18 +27,16 @@ const initialNotes: Notes = {
         id0: {
             color: tools.softTonesGeneratorHSL(),
             name: "Note name",
-            body: "Just a body, you can change me.",
+            body: "Place your thoughts here.",
             createdAt: tools.dateGenerator(),
             id: `id0`,
         },
     },
 };
 
-/*
- TODO: Yeah, at now it looks a little bit stupid
- I'm looking for other ways to prevent updating
- the radio buttons on every store update
-*/
+/**
+ * Prevents re-rendering on every store change
+ */
 let noteEditingMode = false;
 
 /**
