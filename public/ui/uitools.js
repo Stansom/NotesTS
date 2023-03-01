@@ -2,16 +2,26 @@ import { log } from "../misc/logger.js";
 function applyBackgroundColor(hsl, property) {
     document.documentElement.style.setProperty(property, hsl);
 }
+/**
+ * Renders given note in the parent HTML element
+ * @param note
+ * @param elems
+ */
 function renderNote(note, elems) {
     log({ type: 'debug' }, `UI: rendering the note ${note.id}`);
     const { noteName, noteBody, noteCreationDate } = elems;
-    if (note && noteName && noteBody && noteCreationDate) {
-        noteName.value = note.name;
-        noteBody.value = note.body;
-        noteCreationDate.textContent = note.createdAt;
-        applyBackgroundColor(note.color, "--list-background-color");
-    }
+    const { name, body, createdAt, color } = note;
+    noteName.value = name;
+    noteBody.value = body;
+    noteCreationDate.textContent = createdAt;
+    applyBackgroundColor(color, "--list-background-color");
 }
+/**
+ * Creates radio buttons list for given notes
+ * @param notes
+ * @param activeID
+ * @param parent
+ */
 function appendRadioButton(notes, activeID, parent) {
     parent.innerHTML = notes.reduce((acc, v) => {
         if (v) {
@@ -21,6 +31,11 @@ function appendRadioButton(notes, activeID, parent) {
         return acc;
     }, "");
 }
+/**
+ * Renders notes count in the parent element
+ * @param count
+ * @param parent
+ */
 function renderNoteCounter(count, parent) {
     const ch = document.createElement("span");
     ch.id = "note-count";

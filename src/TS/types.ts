@@ -9,6 +9,7 @@ interface Note {
 interface NotesObj {
     [index: string]: Note
 }
+
 interface Notes {
     activeNoteID: string,
     notes: NotesObj

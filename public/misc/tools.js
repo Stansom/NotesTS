@@ -1,3 +1,6 @@
+/*
+    Contains a bunch of useful functions aka tools
+ */
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
     'August', 'September', 'October', 'November', 'December'
 ];
@@ -75,4 +78,9 @@ function debounce(fn, timeout = 300) {
         }, timeout);
     };
 }
-export { conjoin, isEmpty, date, backgroundColorGenerator, softTonesGeneratorHSL, dateGenerator, idGenerator, deactivateListEntries, updateField, copyOnEdit, cloneArray, identity, updateIn, pipe, debounce };
+function removeKey(o, k) {
+    let newObj = Object.assign({}, o);
+    delete newObj[k];
+    return newObj;
+}
+export { conjoin, isEmpty, date, backgroundColorGenerator, softTonesGeneratorHSL, dateGenerator, idGenerator, deactivateListEntries, updateField, copyOnEdit, cloneArray, identity, updateIn, pipe, debounce, removeKey };

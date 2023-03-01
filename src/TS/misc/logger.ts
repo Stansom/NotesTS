@@ -1,8 +1,11 @@
-import { config } from "../env/config.js";
-import { dispatch } from "./dispatcher.js"
+import {config} from "../env/config.js";
+import {dispatch} from "./dispatcher.js"
 
 type LogType = 'debug' | 'warn' | 'info' | 'err' | 'default';
-interface MsgType { type: LogType };
+
+interface MsgType {
+    type: LogType
+}
 
 const dispatchMap = {
     debug: (msg: any) => config.debug ? console.debug(`[DEBUG LOG]: ${msg}`) : "",
@@ -12,13 +15,11 @@ const dispatchMap = {
     default: () => "do nothing"
 }
 
-// const dispMsg: MsgType = {
-//     type: 'default'
-// }
-
-// function type(t: LogType) {
-//     dispMsg.type = t;
-// }
+/**
+ * Logs a message(s) by log level
+ * @param m Message type 'debug' | 'warn' | 'info' | 'err'
+ * @param msg Message(s) to log
+ */
 
 function log(m: MsgType, ...msg: Array<unknown>) {
     dispatch(dispatchMap, m)(msg);

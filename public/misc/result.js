@@ -1,3 +1,10 @@
+/**
+ * Match result with 'OK' or 'ERROR' types<br>
+ * If type is 'OK' calls matcher callback object with ok function<br>
+ * When type is 'ERROR' calls matcher callback object with err function<br>
+ * @param r Result of { type: 'ok'; value: T } | { type: 'err'; value: E }
+ * @param m Matcher function object
+ */
 function match(r, m) {
     switch (r.type) {
         case 'ok': {

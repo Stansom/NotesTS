@@ -7,6 +7,13 @@ interface Matcher<T, E, R> {
     err: (e: E) => R;
 }
 
+/**
+ * Match result with 'OK' or 'ERROR' types<br>
+ * If type is 'OK' calls matcher callback object with ok function<br>
+ * When type is 'ERROR' calls matcher callback object with err function<br>
+ * @param r Result of { type: 'ok'; value: T } | { type: 'err'; value: E }
+ * @param m Matcher function object
+ */
 function match<T, E, R>(r: Result<T, E>, m: Matcher<T, E, R>): R {
     switch (r.type) {
         case 'ok': {
@@ -22,7 +29,7 @@ function match<T, E, R>(r: Result<T, E>, m: Matcher<T, E, R>): R {
 }
 
 function toOk<T, E>(r: T): Result<T, E> {
-    return { type: 'ok', value: r };
+    return {type: 'ok', value: r};
 }
 
 function isOk<T, E>(r: Result<T, E>): boolean {
@@ -56,7 +63,7 @@ function flatMap<T, E>(r: Result<T, E>, fn: Function) {
 function mapErr<T, E>(r: Result<T, E>, fn: Function) {
     return match(r, {
         ok: () => r,
-        err: (e) => ({ type: 'err', value: fn(e) }),
+        err: (e) => ({type: 'err', value: fn(e)}),
     });
 }
 
@@ -68,4 +75,4 @@ function unwrap<T, E>(r: Result<T, E>) {
     return r;
 }
 
-export { map, mapErr, flatMap, unwrap, isOk, isErr }
+export {map, mapErr, flatMap, unwrap, isOk, isErr}

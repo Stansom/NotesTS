@@ -1,4 +1,8 @@
 import { log } from "../misc/logger.js";
+/**
+ * Gets a field from the Local Storage object if exists
+ * @param fieldName
+ */
 function getFromLocalStorage(fieldName) {
     const item = localStorage.getItem(fieldName);
     if (item !== null && item !== undefined) {
@@ -7,10 +11,19 @@ function getFromLocalStorage(fieldName) {
     }
     return false;
 }
+/**
+ * Sets a value to the Local Storage object by provided field name
+ * @param fieldName
+ * @param val
+ */
 function setToLocalStorage(fieldName, val) {
     log({ type: 'debug' }, "LOCAL STORAGE: setting to");
     localStorage.setItem(fieldName, JSON.stringify(val));
 }
+/**
+ * Checks that field is presented in the Local Storage
+ * @param fieldName
+ */
 function checkLocalStorageForItem(fieldName) {
     return localStorage.getItem(fieldName) !== null;
 }

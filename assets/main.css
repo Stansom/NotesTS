@@ -71,7 +71,6 @@ main {
 }
 
 
-
 .d-flex {
     display: flex;
 }
@@ -142,7 +141,7 @@ main {
 
 .text-shadow-22 {
     text-shadow: 2px 1px 1px #02002469, 4px 1px 5px #0200243a,
-        18px 1px 10px #0200246e;
+    18px 1px 10px #0200246e;
 }
 
 .grad-ocean {
@@ -222,8 +221,12 @@ main {
     line-height: 1.5rem;
     left: 0.2rem;
     color: black;
-    transform: scale(0);
-    transition: 0.15s ease-in;
+    transform: scale(1);
+    transition: all 0.15s ease-in;
+}
+
+.radio-button-item:last-child:hover::after {
+    transform: scale(1.2);
 }
 
 .radio-button-item:last-child {
@@ -236,7 +239,6 @@ main {
 
     /* animation: pulsing 2s ease-in-out infinite; */
 }
-
 
 
 @keyframes pulsing {
@@ -263,16 +265,6 @@ main {
         box-shadow: 0 0 0 2px #ffffff00;
 
     }
-}
-
-.radio-button-item:last-child:hover::after {
-    content: "+";
-    position: absolute;
-    font-size: 2.2rem;
-    line-height: 1.5rem;
-    left: 0.2rem;
-    color: black;
-    transform: scale(1);
 }
 
 .radio-button-item::before {
@@ -385,7 +377,6 @@ main {
     align-self: center;
     background-color: rgba(255, 255, 255, 0);
 }
-
 
 
 .note-creation-date-text {

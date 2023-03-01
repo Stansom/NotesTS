@@ -1,3 +1,7 @@
+/*
+    Contains a bunch of useful functions aka tools
+ */
+
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
     'August', 'September', 'October', 'November', 'December'
 ];
@@ -42,7 +46,7 @@ function updateField(m: Object, k: string, v: unknown) {
 function update<T>(o: T, k: keyof typeof o, f: Function): T {
     const val = f(o[k])
 
-    return { ...o, [k]: val }
+    return {...o, [k]: val}
 }
 
 function updateIn<T>(o: T, p: Array<string>, f: Function): T {
@@ -104,6 +108,13 @@ function debounce<T>(fn: Function, timeout = 300) {
     };
 }
 
+function removeKey<T>(o: T, k: string): T {
+    let newObj = {...o};
+    delete newObj[k as keyof typeof o];
+
+    return newObj;
+}
+
 export {
     conjoin,
     isEmpty,
@@ -119,5 +130,6 @@ export {
     identity,
     updateIn,
     pipe,
-    debounce
+    debounce,
+    removeKey
 }
