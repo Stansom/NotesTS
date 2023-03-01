@@ -30,9 +30,13 @@ approach to solve problems - we have a data structure and a couple of functions 
 
 &emsp; So we can easily add one more type of persistent data storage, like API call to a server to save a data about the
 notes into a DB:<br>
-`"in store.ts"` ```javascript ReactiveCell(store, debounce(saveToDB));``` <br>
-`"in dbAPI.ts"` ```javascript function saveToDB(notes) {http.post('api/notes/', notes, options)}```<br>
+```javascript
+"in store.ts"
+ReactiveCell(store, debounce(saveToDB));
 
+"in dbAPI.ts"
+function saveToDB(notes) {http.post('api/notes/', notes, options)}
+```
 &emsp; That will be the next step of the app development a back-end app, which I want to write in Clojure.<br>
 &emsp; Also, I want to make an error handler, Result type monad is already done, I just need to implement the handler in
 the view and make a pop-up 'window' for error representation.
