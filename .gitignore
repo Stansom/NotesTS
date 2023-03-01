@@ -2,8 +2,8 @@
 .DS_Store
 .AppleDouble
 .LSOverride
-public
-src/*
+public/
+src/
 
 # Icon must end with two \r
 Icon
