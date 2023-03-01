@@ -41,5 +41,7 @@ function saveToDB(notes) {http.post('api/notes/', notes, options)}
 &emsp; Also, I want to make an error handler, Result type monad is already done, I just need to implement the handler in
 the view and make a pop-up 'window' for error representation.
 
+[You can check the app here](https://stansom.github.io/NotesTS/)
+
 
 <img alt="app" src="https://user-images.githubusercontent.com/77399308/144223556-46503baa-af03-45fd-976c-44535e85a1aa.jpg" width="400" height="800">
