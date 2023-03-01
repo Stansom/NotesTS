@@ -3,6 +3,7 @@ import * as tools from "../misc/tools.js";
 import * as localStorage from "./localstorage.js";
 import { Note, Notes, RCell } from "../types.js";
 import { log } from "../misc/logger.js";
+import { debounce } from "../misc/tools.js";
 
 /* Storage shape: {
                activeNoteID: number,
@@ -65,7 +66,7 @@ function notesCount() {
 }
 
 function addNote(note: Note) {
-    log("STORE: adding a new note: ", note);
+    log({ type: 'debug' }, "STORE: adding a new note: ", note);
     if (note) {
         store.update((ov: Notes) => ({
             ...ov,
@@ -76,7 +77,7 @@ function addNote(note: Note) {
 }
 
 function setActiveNote(id: string) {
-    log(`STORE: setting active note to ${id}`);
+    log({ type: 'debug' }, `STORE: setting active note to ${id}`);
     store.update((ov) => ({
         ...ov,
         activeNoteID: id,
@@ -105,7 +106,7 @@ function findPrevID(o: Notes, currID: string): string {
     const prevID = nks[currInd - 1];
 
     log(
-        `STORE FIND PREV ID: keys ${nks} current ID: ${currInd}, previous ID: ${prevID}`
+        { type: 'debug' }, `STORE FIND PREV ID: keys ${nks} current ID: ${currInd}, previous ID: ${prevID}`
     );
 
     return prevID;
@@ -119,7 +120,7 @@ function removeNote(id: string) {
     }
     let newID = `id${idToNum - 1}`;
 
-    log(`STORE: removing a note by id: ${idNum(id)} and new ID: ${newID}`);
+    log({ type: 'debug' }, `STORE: removing a note by id: ${idNum(id)} and new ID: ${newID}`);
     store.update((oldNotes: Notes): Notes => {
         const prevID = findPrevID(oldNotes, id);
 
@@ -133,7 +134,7 @@ function removeNote(id: string) {
 
 function initStore(init: Notes) {
     const initItems = getNotesFromLocalStorage() || init;
-    log("STORE: initializing");
+    log({ type: 'debug' }, "STORE: initializing");
     store.update(() => ({
         ...initItems,
     }));
@@ -143,13 +144,8 @@ function activeNote(nts: Notes): string {
     return nts.activeNoteID || `id0`;
 }
 
-// addWatcher((nv) => {
-//     setNotesToLocalStorage(nv);
-//     // activeNote(nv);
-// });
-
 ReactiveCell(store, activeNote);
-ReactiveCell(store, setNotesToLocalStorage);
+ReactiveCell(store, debounce(setNotesToLocalStorage));
 
 function storeWatcher(f: Function): RCell<Notes> {
     return ReactiveCell(store, f)

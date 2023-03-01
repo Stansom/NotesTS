@@ -3,7 +3,7 @@ function applyBackgroundColor(hsl, property) {
     document.documentElement.style.setProperty(property, hsl);
 }
 function renderNote(note, elems) {
-    log(`UI: rendering the note ${note.id}`);
+    log({ type: 'debug' }, `UI: rendering the note ${note.id}`);
     const { noteName, noteBody, noteCreationDate } = elems;
     if (note && noteName && noteBody && noteCreationDate) {
         noteName.value = note.name;
@@ -21,26 +21,10 @@ function appendRadioButton(notes, activeID, parent) {
         return acc;
     }, "");
 }
-// function renderNoteCounter(parent: Element) {
-//     return function (count: number) {
-//         const ch = document.createElement("span");
-//         ch.id = "note-count";
-//         ch.textContent = `${count}`;
-//         parent.replaceChildren(ch);
-//     }
-// }
 function renderNoteCounter(count, parent) {
     const ch = document.createElement("span");
     ch.id = "note-count";
     ch.textContent = `${count}`;
     parent.replaceChildren(ch);
 }
-// function renderNoteCounter(count: number) {
-//     const ch = document.createElement("span");
-//     ch.id = "note-count";
-//     ch.textContent = `${count}`;
-//     return function (parent: Element) {
-//         parent.replaceChildren(ch);
-//     }
-// }
 export { renderNote, appendRadioButton, renderNoteCounter };

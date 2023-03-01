@@ -1,9 +1,8 @@
-import { Note, Notes } from "./types.js";
+import { Notes } from "./types.js";
 import * as tools from "./misc/tools.js";
 import * as store from "./store/store.js";
 import * as ui from "./ui/uitools.js";
 import { log } from "./misc/logger.js";
-import { ReactiveCell } from "./misc/atom.js";
 
 const noteNameInput = document.querySelector(".note-name-input");
 const noteBodyInput = document.querySelector("#note-input-area");
@@ -48,42 +47,34 @@ store.storeWatcher((v: Notes) => {
             v.activeNoteID,
             radioButtonsList!
         )
-
 }
 )
 
 store.initStore(initialNotes);
 
-noteBodyInput?.addEventListener("keyup", (e) => {
-    e.preventDefault();
-    noteEditingMode = true;
-    let body = (e.target as HTMLInputElement).value;
-    const radioListActiveNote = document.querySelector("li[button-active]")?.id!;
-
-    store.updateNoteBody(radioListActiveNote, body);
-    noteEditingMode = false;
-});
-
-noteNameInput?.addEventListener("keyup", (e) => {
-    e.preventDefault();
-    noteEditingMode = true;
-
-    let name = (e.target as HTMLInputElement).value;
-    const radioListActiveNote = document.querySelector("li[button-active]")?.id!;
-
-    store.updateNoteName(radioListActiveNote, name);
-    noteEditingMode = false;
-});
-
-function newNoteHandler() {
-    const newNote = store.createNote("", "");
-    store.addNote(newNote);
+function activeNoteID() {
+    return document.querySelector("li[button-active]")?.id!;
 }
 
-let lastClickedButtonID: string = `id-1`;
-radioButtonsList?.addEventListener("click", (e: Event) => {
+function noteBodyHandler(e: HTMLInputElement) {
+    let body = e.value;
+
+    noteEditingMode = true;
+    store.updateNoteBody(activeNoteID(), body);
+    noteEditingMode = false;
+}
+
+function noteNameHandler(e: HTMLInputElement) {
+    noteEditingMode = true;
+    let name = e.value;
+
+    store.updateNoteName(activeNoteID(), name);
+    noteEditingMode = false;
+}
+
+function radioButtonClickHandler(e: Event) {
     const target = e.target as HTMLLIElement;
-    const listLastChild = radioButtonsList.lastElementChild?.id;
+    const listLastChild = radioButtonsList?.lastElementChild?.id;
     const clickedRadioID = target.id;
 
     if (lastClickedButtonID === clickedRadioID) {
@@ -91,7 +82,6 @@ radioButtonsList?.addEventListener("click", (e: Event) => {
     }
 
     lastClickedButtonID = clickedRadioID;
-    log(`MAIN: Clicking Radio Buttons clicked: ${clickedRadioID}, last child: ${listLastChild}`);
 
     if (clickedRadioID === listLastChild) {
         newNoteHandler();
@@ -103,11 +93,26 @@ radioButtonsList?.addEventListener("click", (e: Event) => {
         store.setActiveNote(clickedRadioID);
     };
 
+    log({ type: 'debug' }, `MAIN: Clicking Radio Buttons clicked: ${clickedRadioID}, last child: ${listLastChild}`);
+}
+
+noteBodyInput?.addEventListener("keyup", (e) => {
+    noteBodyHandler(e.target as HTMLInputElement);
 });
 
-deleteNoteButton?.addEventListener("click", (_) => {
+noteNameInput?.addEventListener("keyup", (e) => {
+    noteNameHandler(e.target as HTMLInputElement);
+});
+
+function newNoteHandler() {
+    const newNote = store.createNote("", "");
+    store.addNote(newNote);
+}
+
+let lastClickedButtonID: string = `id-1`;
+radioButtonsList?.addEventListener("click", radioButtonClickHandler);
+
+deleteNoteButton?.addEventListener("click", () => {
     const radioListActiveNote = document.querySelector("li[button-active]")?.id;
     store.removeNote(radioListActiveNote!);
 });
-
-

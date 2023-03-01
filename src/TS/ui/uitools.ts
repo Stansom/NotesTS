@@ -4,13 +4,13 @@ import { log } from "../misc/logger.js";
 function applyBackgroundColor(hsl: string, property: string) {
     document.documentElement.style.setProperty(property, hsl);
 }
-
 interface Elems {
     [val: string]: HTMLInputElement | Element;
 }
 
 function renderNote(note: Note, elems: Elems) {
-    log(`UI: rendering the note ${note.id}`);
+    log({ type: 'debug' }, `UI: rendering the note ${note.id}`);
+
     const { noteName, noteBody, noteCreationDate } = elems;
     if (note && noteName && noteBody && noteCreationDate) {
         (noteName as HTMLInputElement).value = note.name;
@@ -34,27 +34,12 @@ function appendRadioButton(
         return acc;
     }, "");
 }
-// function renderNoteCounter(parent: Element) {
-//     return function (count: number) {
-//         const ch = document.createElement("span");
-//         ch.id = "note-count";
-//         ch.textContent = `${count}`;
-//         parent.replaceChildren(ch);
-//     }
 
-// }
 function renderNoteCounter(count: number, parent: Element) {
     const ch = document.createElement("span");
     ch.id = "note-count";
     ch.textContent = `${count}`;
     parent.replaceChildren(ch);
 }
-// function renderNoteCounter(count: number) {
-//     const ch = document.createElement("span");
-//     ch.id = "note-count";
-//     ch.textContent = `${count}`;
-//     return function (parent: Element) {
-//         parent.replaceChildren(ch);
-//     }
-// }
+
 export { renderNote, appendRadioButton, renderNoteCounter };

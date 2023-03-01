@@ -66,4 +66,13 @@ function identity(n) {
 function pipe(...fns) {
     return (val) => fns.reduce((acc, v) => v(acc), val);
 }
-export { conjoin, isEmpty, date, backgroundColorGenerator, softTonesGeneratorHSL, dateGenerator, idGenerator, deactivateListEntries, updateField, copyOnEdit, cloneArray, identity, updateIn, pipe };
+function debounce(fn, timeout = 300) {
+    let timer;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            fn(...args);
+        }, timeout);
+    };
+}
+export { conjoin, isEmpty, date, backgroundColorGenerator, softTonesGeneratorHSL, dateGenerator, idGenerator, deactivateListEntries, updateField, copyOnEdit, cloneArray, identity, updateIn, pipe, debounce };

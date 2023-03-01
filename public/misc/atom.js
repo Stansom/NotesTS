@@ -1,6 +1,6 @@
 import { log } from "./logger.js";
 function Atom(initValue) {
-    log("ATOM: initializing");
+    log({ type: 'debug' }, "ATOM: initializing");
     let value = initValue;
     const watchers = [];
     return {
@@ -17,18 +17,9 @@ function Atom(initValue) {
     };
 }
 function ReactiveCell(a, f) {
-    // const cell = Atom<T>(f(a.val()) || a.val());
     const cell = Atom(a.val());
     a.addWatcher((val) => {
-        cell.update((cv) => {
-            // const oldVal = f({ ...cv }) || 0;
-            // const nv = f(val);
-            // console.log("from reactive cell", oldVal, nv)
-            // if (oldVal !== nv) {
-            //     watchers.forEach(w => w(nv));
-            //     // console.log("from reactive cell", { ...cv, nv })
-            // }
-            // return { ...cv, nv }
+        cell.update(() => {
             return f(val);
         });
     });

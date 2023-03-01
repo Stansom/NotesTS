@@ -39,7 +39,6 @@ function updateField(m: Object, k: string, v: unknown) {
     }
 }
 
-
 function update<T>(o: T, k: keyof typeof o, f: Function): T {
     const val = f(o[k])
 
@@ -57,7 +56,6 @@ function updateIn<T>(o: T, p: Array<string>, f: Function): T {
         return updateIn(v, restEntries, f)
     })
 }
-
 
 function dateGenerator() {
     return `${date().getDate() % 10 ? date().getDate() : '0' + date().getDate()}/${getMonth()}/${date().getFullYear()}`;
@@ -95,6 +93,17 @@ function pipe(...fns: Array<Function>): Function {
     return (val: any) => fns.reduce((acc: Function, v: Function) => v(acc), val);
 }
 
+function debounce<T>(fn: Function, timeout = 300) {
+    let timer: number;
+
+    return (...args: T[]) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            fn(...args);
+        }, timeout);
+    };
+}
+
 export {
     conjoin,
     isEmpty,
@@ -109,5 +118,6 @@ export {
     cloneArray,
     identity,
     updateIn,
-    pipe
+    pipe,
+    debounce
 }

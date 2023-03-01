@@ -2,6 +2,7 @@ import { Atom, ReactiveCell } from "../misc/atom.js";
 import * as tools from "../misc/tools.js";
 import * as localStorage from "./localstorage.js";
 import { log } from "../misc/logger.js";
+import { debounce } from "../misc/tools.js";
 /* Storage shape: {
                activeNoteID: number,
                notes {id: { name: String,
@@ -40,13 +41,13 @@ function notesCount() {
     return Object.keys((_a = store.val()) === null || _a === void 0 ? void 0 : _a.notes).length || 1;
 }
 function addNote(note) {
-    log("STORE: adding a new note: ", note);
+    log({ type: 'debug' }, "STORE: adding a new note: ", note);
     if (note) {
         store.update((ov) => (Object.assign(Object.assign({}, ov), { notes: Object.assign(Object.assign({}, ov.notes), { [note.id]: note }), activeNoteID: note.id })));
     }
 }
 function setActiveNote(id) {
-    log(`STORE: setting active note to ${id}`);
+    log({ type: 'debug' }, `STORE: setting active note to ${id}`);
     store.update((ov) => (Object.assign(Object.assign({}, ov), { activeNoteID: id })));
 }
 function lastID() {
@@ -66,7 +67,7 @@ function findPrevID(o, currID) {
     const nks = Object.keys(n);
     const currInd = nks.findIndex((v) => v === currID);
     const prevID = nks[currInd - 1];
-    log(`STORE FIND PREV ID: keys ${nks} current ID: ${currInd}, previous ID: ${prevID}`);
+    log({ type: 'debug' }, `STORE FIND PREV ID: keys ${nks} current ID: ${currInd}, previous ID: ${prevID}`);
     return prevID;
 }
 function removeNote(id) {
@@ -76,7 +77,7 @@ function removeNote(id) {
         return;
     }
     let newID = `id${idToNum - 1}`;
-    log(`STORE: removing a note by id: ${idNum(id)} and new ID: ${newID}`);
+    log({ type: 'debug' }, `STORE: removing a note by id: ${idNum(id)} and new ID: ${newID}`);
     store.update((oldNotes) => {
         const prevID = findPrevID(oldNotes, id);
         return Object.assign(Object.assign({}, oldNotes), { notes: Object.assign({}, removeKey(oldNotes.notes, id)), activeNoteID: prevID });
@@ -84,18 +85,14 @@ function removeNote(id) {
 }
 function initStore(init) {
     const initItems = getNotesFromLocalStorage() || init;
-    log("STORE: initializing");
+    log({ type: 'debug' }, "STORE: initializing");
     store.update(() => (Object.assign({}, initItems)));
 }
 function activeNote(nts) {
     return nts.activeNoteID || `id0`;
 }
-// addWatcher((nv) => {
-//     setNotesToLocalStorage(nv);
-//     // activeNote(nv);
-// });
 ReactiveCell(store, activeNote);
-ReactiveCell(store, setNotesToLocalStorage);
+ReactiveCell(store, debounce(setNotesToLocalStorage));
 function storeWatcher(f) {
     return ReactiveCell(store, f);
 }
