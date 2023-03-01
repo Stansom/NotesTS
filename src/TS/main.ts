@@ -113,6 +113,5 @@ let lastClickedButtonID: string = `id-1`;
 radioButtonsList?.addEventListener("click", radioButtonClickHandler);
 
 deleteNoteButton?.addEventListener("click", () => {
-    const radioListActiveNote = document.querySelector("li[button-active]")?.id;
-    store.removeNote(radioListActiveNote!);
+    store.removeNote(activeNoteID());
 });

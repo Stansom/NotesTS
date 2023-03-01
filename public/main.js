@@ -85,7 +85,5 @@ function newNoteHandler() {
 let lastClickedButtonID = `id-1`;
 radioButtonsList === null || radioButtonsList === void 0 ? void 0 : radioButtonsList.addEventListener("click", radioButtonClickHandler);
 deleteNoteButton === null || deleteNoteButton === void 0 ? void 0 : deleteNoteButton.addEventListener("click", () => {
-    var _a;
-    const radioListActiveNote = (_a = document.querySelector("li[button-active]")) === null || _a === void 0 ? void 0 : _a.id;
-    store.removeNote(radioListActiveNote);
+    store.removeNote(activeNoteID());
 });
