@@ -1,8 +1,9 @@
-import {Notes} from "./types.js";
+import { Notes } from "./types.js";
 import * as tools from "./misc/tools.js";
 import * as store from "./store/store.js";
 import * as ui from "./ui/uitools.js";
-import {log} from "./misc/logger.js";
+import { log } from "./misc/logger.js";
+import { idNum } from "./misc/tools.js";
 
 /**
  * Selectors for UI elements
@@ -43,19 +44,19 @@ let noteEditingMode = false;
  * Watches for store and renders a new state on every change
  */
 store.storeWatcher((v: Notes) => {
-        ui.renderNote(v.notes[v.activeNoteID], {
-            noteName: noteName!,
-            noteBody: noteBody!,
-            noteCreationDate: noteCreationDate!,
-        })
-        ui.renderNoteCounter(Object.keys(v.notes).length, noteCounter!);
-        if (!noteEditingMode)
-            ui.appendRadioButton(
-                [...Object.values(v.notes)],
-                v.activeNoteID,
-                radioButtonsList!
-            )
-    }
+    ui.renderNote(v.notes[v.activeNoteID], {
+        noteName: noteName!,
+        noteBody: noteBody!,
+        noteCreationDate: noteCreationDate!,
+    })
+    ui.renderNoteCounter(Object.keys(v.notes).length, noteCounter!);
+    if (!noteEditingMode)
+        ui.appendRadioButton(
+            [...Object.values(v.notes)],
+            v.activeNoteID,
+            radioButtonsList!
+        )
+}
 )
 
 /**
@@ -104,39 +105,39 @@ function noteNameHandler(e: HTMLInputElement) {
  * Creates a new note and adds it to the store when create new button is clicked
  */
 function newNoteHandler() {
-    const newNote = store.createNote("", "");
-    store.addNote(newNote);
+    store.addNote();
 }
 
 /**
  * Handles radio button click<br>
- * Watches for clicked radio button and when clicked button ID is the same
- * as last presented button in the list calls newNoteHandler<br>
+ * Watches for clicked radio button and if clicked button has 'add-button' attribute
+ * or clicked button ID is equals first and last button IDs calls newNoteHandler function. <br>
  * Otherwise sets active note by providing to the store clicked button ID
  * @param e Current HTML Element
  */
-function radioButtonClickHandler(e: HTMLLIElement) {
-    const listLastChild = radioButtonsList?.lastElementChild?.id;
-    const clickedRadioID = e.id;
+function radioButtonClickHandler(e: Event) {
+    const lastChild = radioButtonsList?.lastElementChild;
+    const firstChild = radioButtonsList?.firstElementChild;
+    const target = (e.target as HTMLLIElement);
+    const clickedRadioID = target.id;
 
-    if (lastClickedButtonID === clickedRadioID) {
+    log({ type: 'debug' }, `MAIN: Radio Buttons, clicked: ${clickedRadioID}, last clicked: ${lastClickedButtonID}`);
+
+    if (target.getAttribute('add-button') !== null) {
+        lastClickedButtonID = `id${idNum(clickedRadioID) + 1}`;
+        newNoteHandler();
         return;
     }
 
-    lastClickedButtonID = clickedRadioID;
-
-    if (clickedRadioID === listLastChild) {
-        newNoteHandler();
-
+    if (lastClickedButtonID === clickedRadioID && firstChild?.id !== lastChild?.id) {
         return;
     }
 
     if (clickedRadioID) {
+        lastClickedButtonID = clickedRadioID;
         store.setActiveNote(clickedRadioID);
     }
 
-
-    log({type: 'debug'}, `MAIN: Clicking Radio Buttons clicked: ${clickedRadioID}, last child: ${listLastChild}`);
 }
 
 /**
@@ -151,8 +152,7 @@ noteNameInput?.addEventListener("keyup", (e) => {
     noteNameHandler(e.target as HTMLInputElement);
 });
 
-radioButtonsList?.addEventListener("click",
-    (e) => radioButtonClickHandler(e.target as HTMLLIElement));
+radioButtonsList?.addEventListener("click", radioButtonClickHandler);
 
 deleteNoteButton?.addEventListener("click", () => {
     store.removeNote(activeNoteID());

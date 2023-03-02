@@ -8,4 +8,4 @@ const config = {
     debug: false
 }
 
-export {config}
+export { config }

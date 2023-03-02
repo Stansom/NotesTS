@@ -1,6 +1,6 @@
 import {Atom, ReactiveCell} from "../misc/atom.js";
 import * as tools from "../misc/tools.js";
-import {debounce, removeKey} from "../misc/tools.js";
+import {debounce, idNum, removeKey} from "../misc/tools.js";
 import * as localStorage from "./localstorage.js";
 import {Note, Notes, RCell} from "../types.js";
 import {log} from "../misc/logger.js";
@@ -87,15 +87,15 @@ function notesCount() {
  * Adds a new note to the store
  * @param note
  */
-function addNote(note: Note) {
-    log({type: 'debug'}, "STORE: adding a new note: ", note);
-    if (note) {
-        store.update((ov: Notes) => ({
-            ...ov,
-            notes: {...ov.notes, [note.id]: note},
-            activeNoteID: note.id,
-        }));
-    }
+function addNote(note?: Note) {
+    const n = note ?? createNote();
+    log({type: 'debug'}, "STORE: adding a new note: ", n);
+
+    store.update((ov: Notes) => ({
+        ...ov,
+        notes: {...ov.notes, [n.id]: n},
+        activeNoteID: n.id,
+    }));
 }
 
 /**
@@ -115,18 +115,6 @@ function setActiveNote(id: string) {
  */
 function lastID(): string {
     return Object.keys(store.val()?.notes!)[notesCount() - 1];
-}
-
-/**
- * Converts an ID string to number
- *
- * @example
- * 'id32' => 32
- *
- * @param id
- */
-function idNum(id: string): number {
-    return Number(id.substring(2));
 }
 
 /**

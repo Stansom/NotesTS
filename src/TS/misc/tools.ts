@@ -115,6 +115,18 @@ function removeKey<T>(o: T, k: string): T {
     return newObj;
 }
 
+/**
+ * Converts an ID string to number
+ *
+ * @example
+ * 'id32' => 32
+ *
+ * @param id
+ */
+function idNum(id: string): number {
+    return Number(id.substring(2));
+}
+
 export {
     conjoin,
     isEmpty,
@@ -131,5 +143,6 @@ export {
     updateIn,
     pipe,
     debounce,
-    removeKey
+    removeKey,
+    idNum
 }

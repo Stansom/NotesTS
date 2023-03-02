@@ -1,5 +1,5 @@
-import {Note} from "../types.js";
-import {log} from "../misc/logger.js";
+import { Note } from "../types.js";
+import { log } from "../misc/logger.js";
 
 function applyBackgroundColor(hsl: string, property: string) {
     document.documentElement.style.setProperty(property, hsl);
@@ -15,10 +15,10 @@ interface Elems {
  * @param elems
  */
 function renderNote(note: Note, elems: Elems) {
-    log({type: 'debug'}, `UI: rendering the note ${note.id}`);
+    log({ type: 'debug' }, `UI: rendering the note ${note.id}`);
 
-    const {noteName, noteBody, noteCreationDate} = elems;
-    const {name, body, createdAt, color} = note;
+    const { noteName, noteBody, noteCreationDate } = elems;
+    const { name, body, createdAt, color } = note;
     (noteName as HTMLInputElement).value = name;
     (noteBody as HTMLInputElement).value = body;
     noteCreationDate.textContent = createdAt;
@@ -40,10 +40,11 @@ function appendRadioButton(
         if (v) {
             acc += `<li class="radio-button-item" id="${v.id}" 
         style="background-color: ${v.color}" ${v.id === activeID ? "button-active" : ""
-            }></li>`;
+                }></li>`;
         }
         return acc;
     }, "");
+    parent.lastElementChild?.setAttribute('add-button', '')
 }
 
 /**
@@ -58,4 +59,4 @@ function renderNoteCounter(count: number, parent: Element) {
     parent.replaceChildren(ch);
 }
 
-export {renderNote, appendRadioButton, renderNoteCounter};
+export { renderNote, appendRadioButton, renderNoteCounter };

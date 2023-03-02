@@ -23,6 +23,7 @@ function renderNote(note, elems) {
  * @param parent
  */
 function appendRadioButton(notes, activeID, parent) {
+    var _a;
     parent.innerHTML = notes.reduce((acc, v) => {
         if (v) {
             acc += `<li class="radio-button-item" id="${v.id}" 
@@ -30,6 +31,7 @@ function appendRadioButton(notes, activeID, parent) {
         }
         return acc;
     }, "");
+    (_a = parent.lastElementChild) === null || _a === void 0 ? void 0 : _a.setAttribute('add-button', '');
 }
 /**
  * Renders notes count in the parent element
