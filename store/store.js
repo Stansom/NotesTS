@@ -1,6 +1,6 @@
 import { Atom, ReactiveCell } from "../misc/atom.js";
 import * as tools from "../misc/tools.js";
-import { debounce, removeKey } from "../misc/tools.js";
+import { debounce, idNum, removeKey } from "../misc/tools.js";
 import * as localStorage from "./localstorage.js";
 import { log } from "../misc/logger.js";
 /* Storage shape: {
@@ -64,10 +64,9 @@ function notesCount() {
  * @param note
  */
 function addNote(note) {
-    log({ type: 'debug' }, "STORE: adding a new note: ", note);
-    if (note) {
-        store.update((ov) => (Object.assign(Object.assign({}, ov), { notes: Object.assign(Object.assign({}, ov.notes), { [note.id]: note }), activeNoteID: note.id })));
-    }
+    const n = note !== null && note !== void 0 ? note : createNote();
+    log({ type: 'debug' }, "STORE: adding a new note: ", n);
+    store.update((ov) => (Object.assign(Object.assign({}, ov), { notes: Object.assign(Object.assign({}, ov.notes), { [n.id]: n }), activeNoteID: n.id })));
 }
 /**
  * Sets a new active note ID by updating 'activeNoteID' field inside the store
@@ -83,17 +82,6 @@ function setActiveNote(id) {
 function lastID() {
     var _a;
     return Object.keys((_a = store.val()) === null || _a === void 0 ? void 0 : _a.notes)[notesCount() - 1];
-}
-/**
- * Converts an ID string to number
- *
- * @example
- * 'id32' => 32
- *
- * @param id
- */
-function idNum(id) {
-    return Number(id.substring(2));
 }
 /**
  * Returns an ID of the previous Note

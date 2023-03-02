@@ -83,4 +83,15 @@ function removeKey(o, k) {
     delete newObj[k];
     return newObj;
 }
-export { conjoin, isEmpty, date, backgroundColorGenerator, softTonesGeneratorHSL, dateGenerator, idGenerator, deactivateListEntries, updateField, copyOnEdit, cloneArray, identity, updateIn, pipe, debounce, removeKey };
+/**
+ * Converts an ID string to number
+ *
+ * @example
+ * 'id32' => 32
+ *
+ * @param id
+ */
+function idNum(id) {
+    return Number(id.substring(2));
+}
+export { conjoin, isEmpty, date, backgroundColorGenerator, softTonesGeneratorHSL, dateGenerator, idGenerator, deactivateListEntries, updateField, copyOnEdit, cloneArray, identity, updateIn, pipe, debounce, removeKey, idNum };
